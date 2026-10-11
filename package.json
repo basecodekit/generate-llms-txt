@@ -1,0 +1,17 @@
+{
+  "name": "generate-llms-txt-source",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Generate llms.txt and Schema.org JSON-LD from one typed product config (source; published to npm as @basecodekit/generate-llms-txt)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "build:npm": "bun run scripts/build-npm.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.0",
+    "typescript": "7.0.2"
+  }
+}

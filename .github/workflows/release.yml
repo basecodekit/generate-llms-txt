@@ -1,0 +1,34 @@
+name: Release
+
+# Publishes to npm when a vX.Y.Z tag is pushed. Uses npm trusted publishing
+# (OIDC, no stored token) and attaches a provenance attestation.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run typecheck
+      - run: bun test
+      - run: bun run build:npm
+      - name: Tag matches package version
+        run: test "v$(jq -r .version package.json)" = "$GITHUB_REF_NAME"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or newer.
+      - run: npm install -g npm@latest
+      - run: node dist/npm/dist/cli.js --help
+      - run: npm publish --provenance --access public
+        working-directory: dist/npm
